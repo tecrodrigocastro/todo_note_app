@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_notes_app/screens/home/widgets/widgets.dart';
+import 'package:todo_notes_app/utils/utils.dart';
 import 'package:todo_notes_app/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -35,21 +36,8 @@ class HomeScreen extends StatelessWidget {
         slivers: [
           const AppSliverAppBar(),
           SliverPadding(
-            padding: const EdgeInsets.all(10),
-            sliver: SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Text('Hello World $index');
-                },
-                childCount: 10,
-              ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisSpacing: 10.0,
-                crossAxisSpacing: 10.0,
-                childAspectRatio: 0.8,
-              ),
-            ),
+            padding: EdgeInsets.all(10),
+            sliver: null, //NoteList(),
           ),
         ],
       ),

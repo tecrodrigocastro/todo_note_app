@@ -14,12 +14,13 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-NoteModel _$NoteModelFromJson(Map<String, dynamic> json) {
-  return _NoteModel.fromJson(json);
+NoteItem _$NoteItemFromJson(Map<String, dynamic> json) {
+  return _NoteItem.fromJson(json);
 }
 
 /// @nodoc
-mixin _$NoteModel {
+mixin _$NoteItem {
+  int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
   @JsonKey(name: "created_at")
@@ -28,26 +29,27 @@ mixin _$NoteModel {
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $NoteModelCopyWith<NoteModel> get copyWith =>
+  $NoteItemCopyWith<NoteItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NoteModelCopyWith<$Res> {
-  factory $NoteModelCopyWith(NoteModel value, $Res Function(NoteModel) then) =
-      _$NoteModelCopyWithImpl<$Res, NoteModel>;
+abstract class $NoteItemCopyWith<$Res> {
+  factory $NoteItemCopyWith(NoteItem value, $Res Function(NoteItem) then) =
+      _$NoteItemCopyWithImpl<$Res, NoteItem>;
   @useResult
   $Res call(
-      {String title,
+      {int id,
+      String title,
       String content,
       @JsonKey(name: "created_at") String createdAt,
       String color});
 }
 
 /// @nodoc
-class _$NoteModelCopyWithImpl<$Res, $Val extends NoteModel>
-    implements $NoteModelCopyWith<$Res> {
-  _$NoteModelCopyWithImpl(this._value, this._then);
+class _$NoteItemCopyWithImpl<$Res, $Val extends NoteItem>
+    implements $NoteItemCopyWith<$Res> {
+  _$NoteItemCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -57,12 +59,17 @@ class _$NoteModelCopyWithImpl<$Res, $Val extends NoteModel>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? content = null,
     Object? createdAt = null,
     Object? color = null,
   }) {
     return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -84,36 +91,42 @@ class _$NoteModelCopyWithImpl<$Res, $Val extends NoteModel>
 }
 
 /// @nodoc
-abstract class _$$_NoteModelCopyWith<$Res> implements $NoteModelCopyWith<$Res> {
-  factory _$$_NoteModelCopyWith(
-          _$_NoteModel value, $Res Function(_$_NoteModel) then) =
-      __$$_NoteModelCopyWithImpl<$Res>;
+abstract class _$$_NoteItemCopyWith<$Res> implements $NoteItemCopyWith<$Res> {
+  factory _$$_NoteItemCopyWith(
+          _$_NoteItem value, $Res Function(_$_NoteItem) then) =
+      __$$_NoteItemCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {String title,
+      {int id,
+      String title,
       String content,
       @JsonKey(name: "created_at") String createdAt,
       String color});
 }
 
 /// @nodoc
-class __$$_NoteModelCopyWithImpl<$Res>
-    extends _$NoteModelCopyWithImpl<$Res, _$_NoteModel>
-    implements _$$_NoteModelCopyWith<$Res> {
-  __$$_NoteModelCopyWithImpl(
-      _$_NoteModel _value, $Res Function(_$_NoteModel) _then)
+class __$$_NoteItemCopyWithImpl<$Res>
+    extends _$NoteItemCopyWithImpl<$Res, _$_NoteItem>
+    implements _$$_NoteItemCopyWith<$Res> {
+  __$$_NoteItemCopyWithImpl(
+      _$_NoteItem _value, $Res Function(_$_NoteItem) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = null,
     Object? title = null,
     Object? content = null,
     Object? createdAt = null,
     Object? color = null,
   }) {
-    return _then(_$_NoteModel(
+    return _then(_$_NoteItem(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
@@ -136,16 +149,19 @@ class __$$_NoteModelCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_NoteModel implements _NoteModel {
-  _$_NoteModel(
-      {required this.title,
+class _$_NoteItem implements _NoteItem {
+  _$_NoteItem(
+      {required this.id,
+      required this.title,
       required this.content,
       @JsonKey(name: "created_at") required this.createdAt,
       required this.color});
 
-  factory _$_NoteModel.fromJson(Map<String, dynamic> json) =>
-      _$$_NoteModelFromJson(json);
+  factory _$_NoteItem.fromJson(Map<String, dynamic> json) =>
+      _$$_NoteItemFromJson(json);
 
+  @override
+  final int id;
   @override
   final String title;
   @override
@@ -158,14 +174,15 @@ class _$_NoteModel implements _NoteModel {
 
   @override
   String toString() {
-    return 'NoteModel(title: $title, content: $content, createdAt: $createdAt, color: $color)';
+    return 'NoteItem(id: $id, title: $title, content: $content, createdAt: $createdAt, color: $color)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_NoteModel &&
+            other is _$_NoteItem &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.createdAt, createdAt) ||
@@ -176,32 +193,34 @@ class _$_NoteModel implements _NoteModel {
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, title, content, createdAt, color);
+      Object.hash(runtimeType, id, title, content, createdAt, color);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_NoteModelCopyWith<_$_NoteModel> get copyWith =>
-      __$$_NoteModelCopyWithImpl<_$_NoteModel>(this, _$identity);
+  _$$_NoteItemCopyWith<_$_NoteItem> get copyWith =>
+      __$$_NoteItemCopyWithImpl<_$_NoteItem>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$_NoteModelToJson(
+    return _$$_NoteItemToJson(
       this,
     );
   }
 }
 
-abstract class _NoteModel implements NoteModel {
-  factory _NoteModel(
-      {required final String title,
+abstract class _NoteItem implements NoteItem {
+  factory _NoteItem(
+      {required final int id,
+      required final String title,
       required final String content,
       @JsonKey(name: "created_at") required final String createdAt,
-      required final String color}) = _$_NoteModel;
+      required final String color}) = _$_NoteItem;
 
-  factory _NoteModel.fromJson(Map<String, dynamic> json) =
-      _$_NoteModel.fromJson;
+  factory _NoteItem.fromJson(Map<String, dynamic> json) = _$_NoteItem.fromJson;
 
+  @override
+  int get id;
   @override
   String get title;
   @override
@@ -213,6 +232,6 @@ abstract class _NoteModel implements NoteModel {
   String get color;
   @override
   @JsonKey(ignore: true)
-  _$$_NoteModelCopyWith<_$_NoteModel> get copyWith =>
+  _$$_NoteItemCopyWith<_$_NoteItem> get copyWith =>
       throw _privateConstructorUsedError;
 }
