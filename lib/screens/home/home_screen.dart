@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_notes_app/screens/home/widgets/widgets.dart';
+import 'package:todo_notes_app/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -14,16 +16,8 @@ class HomeScreen extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              IconButton(
-                onPressed: () {},
-                splashRadius: 30.0,
-                icon: const Icon(Icons.table_chart_outlined),
-              ),
-              IconButton(
-                onPressed: () {},
-                splashRadius: 30.0,
-                icon: const Icon(Icons.brightness_4),
-              ),
+              AppIconButton(onPressed: () {}, icon: Icons.table_chart_outlined),
+              AppIconButton(onPressed: () {}, icon: Icons.brightness_4),
             ],
           ),
         ),
@@ -39,18 +33,23 @@ class HomeScreen extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.edit),
-                SizedBox(
-                  width: 10.0,
-                ),
-                Text("Note Application"),
-              ],
+          const AppSliverAppBar(),
+          SliverPadding(
+            padding: const EdgeInsets.all(10),
+            sliver: SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return Text('Hello World $index');
+                },
+                childCount: 10,
+              ),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 0.8,
+              ),
             ),
-            floating: true,
           ),
         ],
       ),
