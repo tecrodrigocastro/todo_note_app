@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_notes_app/screens/home/widgets/widgets.dart';
 import 'package:todo_notes_app/utils/utils.dart';
 import 'package:todo_notes_app/widgets/widgets.dart';
+import 'package:todo_notes_app/blocs/blocs.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -18,7 +20,28 @@ class HomeScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               AppIconButton(onPressed: () {}, icon: Icons.table_chart_outlined),
-              AppIconButton(onPressed: () {}, icon: Icons.brightness_4),
+              BlocConsumer<AppThemeBloc, AppThemeState>(
+                listener: (_, __) {
+                  // TODO: implement listener
+                },
+                builder: (context, state) {
+                  final appThemeBloc = context.read<AppThemeBloc>();
+                  return state.map(
+                    dark: (value) => AppIconButton(
+                      onPressed: () => appThemeBloc.add(
+                        const ThemeModeChanged(true),
+                      ),
+                      icon: Icons.dark_mode,
+                    ),
+                    light: (_) => AppIconButton(
+                      onPressed: () => appThemeBloc.add(
+                        const ThemeModeChanged(false),
+                      ),
+                      icon: Icons.brightness_4,
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),

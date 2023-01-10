@@ -1,17 +1,18 @@
+// Package imports:
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:todo_notes_app/config.dart';
 import 'package:todo_notes_app/constants.dart';
 import 'package:todo_notes_app/models/app_response.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 part 'app_interceptors.dart';
 
 class DioClient {
   static DioClient? _singleton;
 
+  // Dio client with default configuration
   final Dio dio = createDioClient();
 
   DioClient._internal();
@@ -34,6 +35,7 @@ class DioClient {
     );
 
     dio.interceptors.addAll([
+      AppInterceptors(),
       if (Config.DIO_CLIENT_DEBUG_LOG)
         PrettyDioLogger(
           requestHeader: true,
@@ -41,6 +43,7 @@ class DioClient {
           responseBody: true,
           responseHeader: true,
           error: true,
+          compact: true,
           maxWidth: 90,
         ),
     ]);
