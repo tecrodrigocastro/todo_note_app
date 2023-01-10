@@ -16,7 +16,7 @@ class AppIconButton extends StatelessWidget {
     return IconButton(
       onPressed: onPressed,
       tooltip: tooltip,
-      splashRadius: KIconButtonSplashRadius,
+      splashRadius: kIconButtonSplashRadius,
       icon: Icon(icon),
     );
   }
