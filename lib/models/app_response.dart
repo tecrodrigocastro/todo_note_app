@@ -5,11 +5,19 @@ part 'app_response.g.dart';
 
 @JsonSerializable(explicitToJson: true, genericArgumentFactories: true)
 class AppResponse<T> extends Equatable {
+  /// The boolean indicates the AppResponse is success or failed
   final bool success;
+
+  /// The message of AppResponse description
   final String message;
+
+  /// The AppResponse data
   final T? data;
 
+  /// StatusCode added by response status code (Not from server)
   final int statusCode;
+
+  /// statusMessage added by http response (Not from server)
   final String statusMessage;
 
   const AppResponse._({

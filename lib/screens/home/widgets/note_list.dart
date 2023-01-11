@@ -38,7 +38,7 @@ class NoteListItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => onPressed(note),
       child: Card(
-        color: Colors.blue,
+        color: HexColor.fromHex(note.color),
         elevation: 3,
         child: Dismissible(
           key: ValueKey("dismissable-${note.id}"),
@@ -71,7 +71,7 @@ class NoteListItem extends StatelessWidget {
             print('onDismissed called');
           },
           child: Container(
-            height: 100,
+            height: 110,
             padding: const EdgeInsets.symmetric(
               vertical: 10,
               horizontal: 20,
@@ -88,6 +88,7 @@ class NoteListItem extends StatelessWidget {
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       Text(
@@ -111,7 +112,7 @@ class NoteListItem extends StatelessWidget {
                         width: 10,
                       ),
                       Text(
-                        'date time',
+                        formatDateTime(note.createdAt),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,

@@ -21,7 +21,6 @@ class MyApp extends StatelessWidget {
         providers: [
           BlocProvider<AppThemeBloc>(create: (_) => AppThemeBloc()),
           BlocProvider<NotesBloc>(
-            lazy: false,
             create: (context) => NotesBloc(
               noteRepository: context.read<NoteRepository>(),
             )..add(const Started()),
