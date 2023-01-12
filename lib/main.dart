@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_notes_app/blocs/blocs.dart';
 import 'package:todo_notes_app/repositories/repositories.dart';
 import 'package:todo_notes_app/screens/add_note/add_note_screen.dart';
+import 'package:todo_notes_app/screens/add_note/bloc/add_note_bloc.dart';
 import 'package:todo_notes_app/screens/home/bloc/notes_bloc.dart';
 import 'package:todo_notes_app/screens/home/home_screen.dart';
 
@@ -24,6 +25,12 @@ class MyApp extends StatelessWidget {
             create: (context) => NotesBloc(
               noteRepository: context.read<NoteRepository>(),
             )..add(const Started()),
+          ),
+          BlocProvider<AddNoteBloc>(
+            create: (context) => AddNoteBloc(
+              noteRepository: context.read<NoteRepository>(),
+              notesBloc: context.read<NotesBloc>(),
+            ),
           ),
         ],
         child: BlocConsumer<AppThemeBloc, AppThemeState>(

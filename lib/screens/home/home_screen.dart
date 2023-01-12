@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_notes_app/enums/enums.dart';
 import 'package:todo_notes_app/models/models.dart';
+import 'package:todo_notes_app/screens/add_note/add_note_screen.dart';
+import 'package:todo_notes_app/screens/add_note/bloc/add_note_bloc.dart';
 import 'package:todo_notes_app/screens/home/bloc/notes_bloc.dart';
 import 'package:todo_notes_app/screens/home/widgets/widgets.dart';
 import 'package:todo_notes_app/utils/utils.dart';
@@ -44,7 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _onNotePressed(NoteItem note) {
-    print(note);
+    context.read<AddNoteBloc>().add(SetSelectedNote(note));
+    Navigator.of(context).pushNamed(AddNoteScreen.routeName);
   }
 
   @override
@@ -108,7 +111,9 @@ class _HomeScreenState extends State<HomeScreen> {
           final isLoading =
               state.status.isRefreshing || state.status.isLoadingMore;
           return FloatingActionButton(
-            onPressed: () => isLoading ? null : print('push route'),
+            onPressed: () => isLoading
+                ? null
+                : Navigator.of(context).pushNamed(AddNoteScreen.routeName),
             backgroundColor: isLoading
                 ? Theme.of(context).primaryColorLight
                 : Theme.of(context).primaryColor,
