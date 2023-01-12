@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:todo_notes_app/models/models.dart';
+import 'package:todo_notes_app/utils/colors.dart';
+import 'package:todo_notes_app/utils/formatting.dart';
 
 class NoteGrid extends StatelessWidget {
-  const NoteGrid({super.key, required this.notes});
+  const NoteGrid({super.key, required this.notes, required this.onNotePressed});
 
   final List<NoteItem> notes;
+  final void Function(NoteItem) onNotePressed;
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
-          return const NoteGridItem();
+          final note = notes[index];
+          return NoteGridItem(
+            note: note,
+            onPressed: onNotePressed,
+          );
         },
-        childCount: 10,
+        childCount: notes.length,
       ),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -27,14 +35,19 @@ class NoteGrid extends StatelessWidget {
 class NoteGridItem extends StatelessWidget {
   const NoteGridItem({
     Key? key,
+    required this.note,
+    required this.onPressed,
   }) : super(key: key);
+
+  final NoteItem note;
+  final void Function(NoteItem) onPressed;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => onPressed(note),
       child: Card(
-        color: Colors.red,
+        color: HexColor.fromHex(note.color),
         elevation: 3,
         child: Container(
           decoration: BoxDecoration(
@@ -50,20 +63,20 @@ class NoteGridItem extends StatelessWidget {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
-                      'title',
+                      note.title,
                       maxLines: 3,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                         overflow: TextOverflow.fade,
                       ),
                     ),
                     Text(
-                      'content',
+                      note.content,
                       maxLines: 5,
-                      style: TextStyle(
+                      style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -76,7 +89,7 @@ class NoteGridItem extends StatelessWidget {
                   const Icon(Icons.calendar_today, size: 12),
                   const SizedBox(width: 10),
                   Text(
-                    'Wed 8/24/2022',
+                    formatDateTime(note.createdAt, hasTime: false),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w500,

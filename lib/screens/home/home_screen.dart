@@ -1,15 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_notes_app/enums/enums.dart';
+import 'package:todo_notes_app/models/models.dart';
 import 'package:todo_notes_app/screens/home/bloc/notes_bloc.dart';
 import 'package:todo_notes_app/screens/home/widgets/widgets.dart';
 import 'package:todo_notes_app/utils/utils.dart';
 import 'package:todo_notes_app/widgets/widgets.dart';
 import 'package:todo_notes_app/blocs/blocs.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
   static const routeName = "/";
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  ScrollController? _scrollController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    _scrollController?.dispose();
+
+    super.dispose();
+  }
+
+  bool _onScrollNotification(ScrollNotification notification) {
+    if (notification is ScrollEndNotification &&
+        _scrollController!.position.extentAfter == 0) {
+      print('read more notes');
+      context.read<NotesBloc>().add(const LoadMore());
+    }
+    return false;
+  }
+
+  void _onNotePressed(NoteItem note) {
+    print(note);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,9 +78,7 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
               BlocConsumer<AppThemeBloc, AppThemeState>(
-                listener: (_, __) {
-                  // TODO: implement listener
-                },
+                listener: (_, __) {},
                 builder: (context, state) {
                   final appThemeBloc = context.read<AppThemeBloc>();
                   return state.map(
@@ -67,47 +102,76 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        backgroundColor: Theme.of(context).primaryColor,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
+      floatingActionButton: BlocConsumer<NotesBloc, NotesState>(
+        listener: (_, __) {},
+        builder: (context, state) {
+          final isLoading =
+              state.status.isRefreshing || state.status.isLoadingMore;
+          return FloatingActionButton(
+            onPressed: () => isLoading ? null : print('push route'),
+            backgroundColor: isLoading
+                ? Theme.of(context).primaryColorLight
+                : Theme.of(context).primaryColor,
+            child: isLoading
+                ? const CircularProgressIndicator(
+                    color: Colors.white,
+                  )
+                : const Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
+          );
+        },
       ),
-      body: CustomScrollView(
-        slivers: [
-          const AppSliverAppBar(),
-          SliverPadding(
-            padding: const EdgeInsets.all(10),
-            sliver: BlocConsumer<NotesBloc, NotesState>(
-              listener: (context, state) {},
-              builder: (context, state) {
-                if (state.status.isLoading) {
-                  return const SliverFillRemaining(
-                    child: BlankContent(
-                      isLoading: true,
-                    ),
-                  );
-                } // else if (state.status.isError) {
-                // return const SliverFillRemaining(
-                //   child: Center(
-                //     child: Text('DEU ERRO MANÉ'),
-                //   ),
-                // );
-                //}
-                if (!state.hasNotes) {
-                  return const SliverFillRemaining(
-                    child: BlankContent(),
-                  );
-                }
-                return state.viewType.isGrid
-                    ? NoteGrid(notes: state.notes)
-                    : NoteList(notes: state.notes);
-              },
-            ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          context.read<NotesBloc>().add(const Refresh());
+        },
+        child: NotificationListener<ScrollNotification>(
+          onNotification: ((notification) =>
+              _onScrollNotification(notification)),
+          child: CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              const AppSliverAppBar(),
+              SliverPadding(
+                padding: const EdgeInsets.all(10),
+                sliver: BlocConsumer<NotesBloc, NotesState>(
+                  listener: (context, state) {},
+                  builder: (context, state) {
+                    if (state.status.isLoading) {
+                      return const SliverFillRemaining(
+                        child: BlankContent(
+                          isLoading: true,
+                        ),
+                      );
+                    } // else if (state.status.isError) {
+                    // return const SliverFillRemaining(
+                    //   child: Center(
+                    //     child: Text('DEU ERRO MANÉ'),
+                    //   ),
+                    // );
+                    //}
+                    if (!state.hasNotes) {
+                      return const SliverFillRemaining(
+                        child: BlankContent(),
+                      );
+                    }
+                    return state.viewType.isGrid
+                        ? NoteGrid(
+                            notes: state.notes,
+                            onNotePressed: _onNotePressed,
+                          )
+                        : NoteList(
+                            notes: state.notes,
+                            onNotePressed: _onNotePressed,
+                          );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

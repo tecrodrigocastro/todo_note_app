@@ -26,6 +26,53 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
 
       await _getFirstPage(emit);
     });
+    on<Delete>((event, emit) {
+      _noteRepository.deleteSingle(event.id);
+      emit(state.copyWith(
+        notes: [...state.notes]
+          ..removeWhere((element) => element.id == event.id),
+      ));
+    });
+    on<Refresh>((event, emit) async {
+      if (state.status.isRefreshing) return;
+      emit(state.copyWith(status: DataStatus.refreshing));
+
+      await _getFirstPage(emit);
+    });
+
+    on<LoadMore>((event, emit) async {
+      if (state.status.isLoadingMore || state.isLastPage) return;
+      emit(state.copyWith(status: DataStatus.loadingMore));
+      final newPage = state.page + 1;
+      final result = await _noteRepository.getMany(currentPage: newPage);
+
+      if (result.success) {
+        final newNotes = result.data ?? [];
+        if (newNotes.isNotEmpty) {
+          emit(
+            state.copyWith(
+              notes: [...state.notes, ...newNotes],
+              status: DataStatus.initial,
+              page: newPage,
+            ),
+          );
+        } else {
+          emit(
+            state.copyWith(
+              status: DataStatus.initial,
+              isLastPage: true,
+            ),
+          );
+        }
+      } else {
+        emit(
+          state.copyWith(
+            message: result.message,
+            status: DataStatus.error,
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _getFirstPage(Emitter<NotesState> emit) async {

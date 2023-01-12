@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:todo_notes_app/models/models.dart';
+import 'package:todo_notes_app/screens/home/bloc/notes_bloc.dart';
 
 import '../../../utils/utils.dart';
 
 class NoteList extends StatelessWidget {
-  NoteList({super.key, required this.notes});
+  NoteList({super.key, required this.notes, required this.onNotePressed});
   final List<NoteItem> notes;
+  final void Function(NoteItem) onNotePressed;
   @override
   Widget build(BuildContext context) {
     return SliverList(
@@ -13,13 +16,12 @@ class NoteList extends StatelessWidget {
         (context, index) {
           final note = notes[index];
           return NoteListItem(
+            key: ValueKey("list-item-${note.id}"),
             note: note,
-            onPressed: (note) {
-              print(note);
-            },
+            onPressed: onNotePressed,
           );
         },
-        childCount: 10,
+        childCount: notes.length,
       ),
     );
   }
@@ -68,7 +70,7 @@ class NoteListItem extends StatelessWidget {
             return result;
           },
           onDismissed: (_) {
-            print('onDismissed called');
+            context.read<NotesBloc>().add(Delete(note.id));
           },
           child: Container(
             height: 110,
