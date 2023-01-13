@@ -73,6 +73,26 @@ class NotesBloc extends Bloc<NotesEvent, NotesState> {
         );
       }
     });
+    on<FilterNote>((event, emit) {
+      List<NoteItem> notes = [...state.notes];
+
+      switch (event.type) {
+        case FilterDataType.delete:
+          notes.removeWhere((element) => element.id == event.data!);
+          break;
+        case FilterDataType.update:
+          final updateNoteIndex = notes.indexWhere(
+              (element) => element.id == (event.data as NoteItem).id);
+          if (updateNoteIndex != -1) {
+            notes[updateNoteIndex] = event.data;
+          }
+          break;
+        case FilterDataType.create:
+          notes = [event.data, ...notes];
+          break;
+      }
+      emit(state.copyWith(notes: notes));
+    });
   }
 
   Future<void> _getFirstPage(Emitter<NotesState> emit) async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 import 'package:todo_notes_app/enums/data_status.dart';
+import 'package:todo_notes_app/enums/enums.dart';
 import 'package:todo_notes_app/models/models.dart';
 import 'package:todo_notes_app/models/requests/create_note_request.dart';
 import 'package:todo_notes_app/models/requests/update_note_request.dart';
@@ -26,6 +27,44 @@ class AddNoteBloc extends Bloc<AddNoteEvent, AddNoteState> {
         super(AddNoteState.initial()) {
     on<SetSelectedNote>((event, emit) {
       emit(state.copyWith(note: event.note));
+    });
+    on<Update>((event, emit) async {
+      if (state.status.isUpdating) return;
+      final result = await _noteRepository.update(event.request, event.id);
+
+      if (result.success) {
+        emit(state.copyWith(
+          message: result.message,
+          status: DataStatus.success,
+          note: null,
+        ));
+
+        _noteBloc.add(FilterNote(FilterDataType.update, result.data));
+      } else {
+        emit(state.copyWith(
+          message: result.message,
+          status: DataStatus.error,
+        ));
+      }
+    });
+
+    on<Delete>((event, emit) async {
+      if (state.status.isDeleting) return;
+      emit(state.copyWith(status: DataStatus.deleting));
+
+      final result = await _noteRepository.deleteSingle(event.id);
+
+      if (result.success) {
+        emit(state.copyWith(
+          message: result.message,
+          status: DataStatus.success,
+          note: null,
+        ));
+
+        _noteBloc.add(FilterNote(FilterDataType.delete, result.data));
+      } else {
+        emit(state.copyWith(message: result.message, status: DataStatus.error));
+      }
     });
   }
 
